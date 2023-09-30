@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose = require('mongoose');
 const courses = require('./routes/courses');
+const so = require('./routes/so')
 const getDatas = require('./routes/getData');
 
 mongoose.Promise = global.Promise;
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/courses', courses);
+app.use('/so', so);
 app.use('/getDatas', getDatas);
 
 // catch 404 and forward to error handler
