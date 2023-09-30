@@ -47,4 +47,5 @@
 }
 ```
 ### RUN
+- npm install
 - nodemon DEBUG=myapp:* & npm start
