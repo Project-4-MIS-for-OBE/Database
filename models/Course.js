@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const courseSchema = new mongoose.Schema(
     {
-        courseID: {
+        courseNo: {
             type : String,
             required : 'Course can not be blank'},
         year : String,
@@ -14,8 +14,12 @@ const courseSchema = new mongoose.Schema(
           type : Array,
           objEN: String,
           objTH: String,
-          selectSO: [Number],
-          csoScore: Number
+          selectedSO: [Number],
+          csoScore: {
+            type : Number,
+            default : 0,
+            required : true
+          }
         }
       },
     { collection: 'courses' })
