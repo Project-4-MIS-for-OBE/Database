@@ -1,5 +1,8 @@
 const express = require('express');
 const { default: axios } = require('axios');
+const mongoose = require('mongoose');
+
+
 
 const router = express.Router()
   let config_1 = {
@@ -35,8 +38,9 @@ const router = express.Router()
       });
       
       // Initialize an array to store sections data
-      const sectionsData = [];
       
+      const sectionsData = [];
+     
       // Iterate over each course number
       for (let i = 0; i < courseNoList.length; i++) {
         const courseNo = courseNoList[i];
@@ -59,8 +63,9 @@ const router = express.Router()
 
       const courseTitleEN = response1.data.courses.find((course) => course.courseNo === courseNo)?.courseTitleEN;
       const courseTitleTH = response1.data.courses.find((course) => course.courseNo === courseNo)?.courseTitleTH;
-  
+       
       if (emailPrefix === section.teacher.firstNameEN.toLowerCase()) {
+        instructorName  = section.teacher.firstNameEN + " " + section.teacher.lastNameEN;
         return {
             courseNo: courseNo,
             sectionNo: section.section,
@@ -102,46 +107,11 @@ const router = express.Router()
 
       sectionsData.sort((a, b) => a.courseNo.localeCompare(b.courseNo));
   
-      res.status(200).json({ sectionsData });
+      res.status(200).json({ instructorName,sectionsData });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   })
-  
-  router.get('/home', async (req, res) => {
-    try{ 
-      const tID = req.query.tID;
-      const year = req.query.year;
-      const semester = req.query.semester;
-      const response =  await axios.get('https://api.cpe.eng.cmu.ac.th/api/v1/course/sections?courseNo=+'+`${courseNo}` + '&year=' + `${year}` + '&semester='+ `${semester}`,config_2)
-      const response2 =  await axios.get('https://qa.cpe.eng.cmu.ac.th/api/3rdParty/course?semester='+ `${semester}`+ '&year=' +`${year}`,config_1)
-      const sectionsData = response.data.sections.map((section) => {
-        const coTeachers = section.coTeachers || null;
-        const coTeacherNames = coTeachers.map((coTeacher) => ({
-          NameTH: coTeacher.firstNameTH + " " + coTeacher.lastNameTH,
-          NameEN: coTeacher.firstNameEN + " " + coTeacher.lastNameEN,
-        }));
 
-        const courseTitleEN = response2.data.courses.find((course) => course.courseNo === courseNo)?.courseTitleEN;
-        const courseTitleTH = response2.data.courses.find((course) => course.courseNo === courseNo)?.courseTitleTH;
-
-        return {
-          courseNo: courseNo,
-          sectionNo: section.section,
-          courseTitleTH: courseTitleTH,
-          courseTitleEN: courseTitleEN,
-          NameTH: section.teacher.firstNameTH + " " + section.teacher.lastNameTH,
-          NameEN: section.teacher.firstNameEN + " " + section.teacher.lastNameEN,
-          coTeachers: coTeachers.length > 0 ? coTeacherNames : null,
-        };
-      });
-
-
-      res.status(200).json(sectionsData);
-
-      }catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-  })
 
 module.exports = router

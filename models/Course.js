@@ -18,6 +18,11 @@ const courseSchema = new mongoose.Schema({
             type: String,
             required: true
         },
+        status:{
+            type: String,
+            enum: ["Waiting", "In Progress", "Success"],
+            required: true
+        },
         csoList: {
             type: Array,
             objEN: String,
@@ -29,6 +34,7 @@ const courseSchema = new mongoose.Schema({
                 required: true
             }
         }
+        
     }]
 }, { collection: 'courses' });
 
