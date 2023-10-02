@@ -65,28 +65,19 @@ router.get('/', async (req, res) => {
             }
           }
 
-          if (status === "fail") {
-            courses[0].section.push({
-                sectionNumber: "3",
-                status: "In Progress",
-                csoList: [
-                    {
-                        objEN: "Example CSO for section 802",
-                        objTH: "ตัวอย่าง CSO สำหรับหัวข้อ 802",
-                        selectedSO: [3],
-                        csoScore: 2
-                    }
-                ]
-            });
+          if (status == "fail"){
+            (courses[0].section.push({sectionNumber:"3",status:"In Progress",csoList: [
+              {
+                objEN: "Example CSO for section 802",
+                "objTH": "ตัวอย่าง CSO สำหรับหัวข้อ 802",
+                selectedSO: [3],
+                csoScore: 2
+              }
+            ]}))
             status = "In Progress";
-            courses[0].save((err) => {
-                if (err) {
-                    res.status(500).json({ error: err.message });
-                    return;
-                }
-                res.status(200).json(status);
-            });
+            await courses[0].save();
           }
+          res.status(200).json(status);
         } else {
           // No courses found
           (await Course.create(a)).save();
