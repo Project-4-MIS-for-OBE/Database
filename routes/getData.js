@@ -1,7 +1,6 @@
 const express = require('express');
 const { default: axios } = require('axios');
-const mongoose = require('mongoose');
-const Course = mongoose.model('course');
+const Course = require('../models/Course.js');
 
 
 const router = express.Router()
@@ -44,7 +43,7 @@ const router = express.Router()
       // Iterate over each course number
       for (let i = 0; i < courseNoList.length; i++) {
         const courseNo = courseNoList[i];
-
+        
         // Fetch section data from the second API endpoint
         const response = await axios.get('https://api.cpe.eng.cmu.ac.th/api/v1/course/sections?courseNo=' + `${courseNo}` + '&year=' + `${year}` + '&semester=' + `${semester}`, config_2);
         
