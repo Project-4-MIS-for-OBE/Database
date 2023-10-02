@@ -8,12 +8,10 @@ const courseSchema = new mongoose.Schema({
     year : {
         type : String,
         required : true,
-        unique: true
     },
     semester : {
         type : String,
         required : true,
-        unique: true
     },
     section : [{
         sectionNumber: {
@@ -45,6 +43,6 @@ courseSchema.pre('validate', function(next) {
     next();
 });
 
-courseSchema.index({ year: 1, semester: 1}, { unique: true });
+courseSchema.index({courseNo: 1 , year: 1 , semester: 1} , { unique: true});
 
 module.exports = mongoose.model('courses', courseSchema);
