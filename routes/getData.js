@@ -1,7 +1,7 @@
 const express = require('express');
 const { default: axios } = require('axios');
 const mongoose = require('mongoose');
-
+const Course = mongoose.model('course');
 
 
 const router = express.Router()
