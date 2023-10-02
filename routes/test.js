@@ -54,8 +54,39 @@ router.get('/', async (req, res) => {
           }
         if (courses.length > 0) {
           // At least one course found
-          res.status(200).json(courses);
-          
+          const sectionNumbers = courses[0].section.map(section => section.sectionNumber);
+          const allstatus = courses[0].section.map(section => section.status);
+          let status = "fail"; // Default status if no sectionNumber equals "1"
+
+          for (let i = 0; i < courses[0].section.length; i++) {
+            if (sectionNumbers[i] === "3") {
+              status = allstatus[i];
+              break; // Found a section with sectionNumber === "1", exit the loop
+            }
+          }
+
+          if (status === "fail") {
+            courses[0].section.push({
+                sectionNumber: "3",
+                status: "In Progress",
+                csoList: [
+                    {
+                        objEN: "Example CSO for section 802",
+                        objTH: "ตัวอย่าง CSO สำหรับหัวข้อ 802",
+                        selectedSO: [3],
+                        csoScore: 2
+                    }
+                ]
+            });
+            status = "In Progress";
+            courses[0].save((err) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                    return;
+                }
+                res.status(200).json(status);
+            });
+          }
         } else {
           // No courses found
           (await Course.create(a)).save();
