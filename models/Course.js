@@ -22,19 +22,18 @@ const courseSchema = new mongoose.Schema({
             type: String,
             enum: ["Waiting", "In Progress", "Success"],
             required: true
+        },csoList: {
+            type: Array,
+            objEN: String,
+            objTH: String,
+            selectedSO: [Number],
+            csoScore: {
+                type: Number,
+                default: 0,
+                required: true
+            }
         }
-    }],csoList: {
-        type: Array,
-        objEN: String,
-        objTH: String,
-        selectedSO: [Number],
-        csoScore: {
-            type: Number,
-            default: 0,
-            required: true
-        },
-        visit: Boolean
-    }
+    }]
 }, { collection: 'courses' });
 
 courseSchema.pre('validate', function(next) {
@@ -50,4 +49,4 @@ courseSchema.pre('validate', function(next) {
 
 courseSchema.index({courseNo: 1 , year: 1 , semester: 1} , { unique: true});
 
-module.exports = mongoose.model('courses', courseSchema);
+module.exports = mongoose.model('course', courseSchema);

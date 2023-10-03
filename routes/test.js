@@ -8,11 +8,11 @@ const { Db, MongoDBCollectionNamespace } = require('mongodb');
 
 router.get('/', async (req, res) => {
     try {
-        const courses = await Course.find({ courseNo: '261336', year: '2566', semester: '5' }).exec();
+        const courses = await Course.find({ courseNo: '261336', year: '2566', semester: '6' }).exec();
         const a = {
             courseNo: "261336",
             year: "2566",
-            semester: "5",
+            semester: "6",
             section: [
               {
                 sectionNumber: "1",
@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
               },
               {
                 sectionNumber: "2",
-                status: "In Progress",
+                status: "Waiting",
                 csoList: [
                   {
                     objEN: "Example CSO for section 802",
@@ -59,14 +59,14 @@ router.get('/', async (req, res) => {
           let status = "fail"; // Default status if no sectionNumber equals "1"
 
           for (let i = 0; i < courses[0].section.length; i++) {
-            if (sectionNumbers[i] === "3") {
+            if (sectionNumbers[i] === "2") {
               status = allstatus[i];
               break; // Found a section with sectionNumber === "1", exit the loop
             }
           }
 
           if (status == "fail"){
-            (courses[0].section.push({sectionNumber:"3",status:"In Progress",csoList: [
+            (courses[0].section.push({sectionNumber:"2",status:"In Progress",csoList: [
               {
                 objEN: "Example CSO for section 802",
                 "objTH": "ตัวอย่าง CSO สำหรับหัวข้อ 802",
