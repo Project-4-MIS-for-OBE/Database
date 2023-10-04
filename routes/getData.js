@@ -180,7 +180,11 @@ router.get('/test', async (req, res) => {
           const foundCourse = findCourse(courseNo);
         if (foundCourse) {
            csoList = foundCourse.csoList;
+           csoList.forEach((csoItem) => {
+            csoItem.Csoscore = 0;
+          });
         }
+        
           const a = {
             courseNo: courseNo,
             year: year,
