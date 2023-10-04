@@ -8,7 +8,7 @@ const courses = require('./routes/courses');
 const so = require('./routes/so')
 const getDatas = require('./routes/getData');
 const test = require('./routes/test');
-const edit = require('./routes/edit');
+const edits = require('./routes/edit');
 
 mongoose.Promise = global.Promise;
 
@@ -37,7 +37,7 @@ app.use('/courses', courses);
 app.use('/so', so);
 app.use('/getDatas', getDatas);
 app.use('/test',test);
-app.use('/edit',edit);
+app.use('/edits',edits);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
