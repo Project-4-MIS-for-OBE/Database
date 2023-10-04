@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const { default: axios } = require('axios');
-
+const Coursess = require('../models/Course.js');
 
 let config_1 = {
   headers: {
@@ -42,6 +42,15 @@ router.get('/', async (req, res) => {
     console.log(curriculum);
      const response2 = await axios.get('https://qa.cpe.eng.cmu.ac.th/api/3rdParty/so?curriculum=' + `${curriculum}` + '&year=' + `${year}`, config_1);
      const soList = response2.data.so;
+
+     const coursesFilteredBycourseNo = response1.data.courses.filter((course) => {
+      return course.courseNo === courseNo;
+    });
+    
+    const coursesFilteredBycurriculum = coursesFilteredBycourseNo.filter((course) => {
+      return course.curriculum == curriculum;
+    });
+    const csoList = coursesFilteredBycurriculum[0].csoList;
     // Initialize an array to store sections data
 
     // const sectionsData = [];
@@ -200,7 +209,7 @@ router.get('/', async (req, res) => {
     // sectionsData.sort((a, b) => a.courseNo.localeCompare(b.courseNo));
     // sectionsData.sectionNo = [sectionsData.sectionNo ];
 
-    res.status(200).json({soList});
+    res.status(200).json({csoList,soList});
  
   } catch (error) {
     res.status(500).json({ error: error.message });
