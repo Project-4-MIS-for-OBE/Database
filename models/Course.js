@@ -13,6 +13,17 @@ const courseSchema = new mongoose.Schema({
         type : String,
         required : true,
     },
+    csoList: {
+        type: Array,
+        objEN: String,
+        objTH: String,
+        selectedSO: [Number],
+        csoScore: {
+            type: Number,
+            default: 0,
+            required: true
+        }
+    },
     section : [{
         sectionNumber: {
             type: String,
@@ -22,16 +33,6 @@ const courseSchema = new mongoose.Schema({
             type: String,
             enum: ["Waiting", "In Progress", "Success"],
             required: true
-        },csoList: {
-            type: Array,
-            objEN: String,
-            objTH: String,
-            selectedSO: [Number],
-            csoScore: {
-                type: Number,
-                default: 0,
-                required: true
-            }
         }
     }]
 }, { collection: 'courses' });

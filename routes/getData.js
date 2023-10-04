@@ -1,7 +1,6 @@
 const express = require('express');
 const { default: axios } = require('axios');
-const mongoose = require('mongoose');
-const Course = mongoose.model('course');
+const Coursess = require('../models/Course.js');
 
 
 const router = express.Router()
@@ -138,7 +137,7 @@ router.get('/test', async (req, res) => {
     // Initialize an array to store sections data
 
     const sectionsData = [];
-
+    const relevantCourse = [];
     // Iterate over each course number
     for (let i = 0; i < courseNoList.length; i++) {
 
@@ -148,7 +147,7 @@ router.get('/test', async (req, res) => {
       const response = await axios.get('https://api.cpe.eng.cmu.ac.th/api/v1/course/sections?courseNo=' + `${courseNo}` + '&year=' + `${year}` + '&semester=' + `${semester}`, config_2);
 
       // Process sections data
-      const sections = response.data.sections.map((section) => {
+      const sections =  response.data.sections.map((section) => {
         const coTeachers = section.coTeachers || null;
         const coTeacherNames = coTeachers.map((coTeacher) => {
           return {
@@ -163,18 +162,122 @@ router.get('/test', async (req, res) => {
         const courseTitleEN = response1.data.courses.find((course) => course.courseNo === courseNo)?.courseTitleEN;
         const courseTitleTH = response1.data.courses.find((course) => course.courseNo === courseNo)?.courseTitleTH;
 
+        let statuss = "fail"; // Default status if no sectionNumber equals "1"
+        let csoList = null;  // Initialize csoList to a default value (null) or an appropriate default based on your use case.
+        function findCourse(courseNo) {
+          return response1.data.courses.find((course) => {
+            return course.courseNo === courseNo;
+          });
+        }
+
+        
+
+
+
+    
+        Coursess.find({ courseNo: courseNo, year: year, semester: semester }).exec()
+        .then(courses => {
+          const foundCourse = findCourse(courseNo);
+        if (foundCourse) {
+           csoList = foundCourse.csoList;
+        }
+          const a = {
+            courseNo: courseNo,
+            year: year,
+            semester: semester,
+            csoList:csoList,
+            section: [
+              {
+                sectionNumber: section.section,
+                status: "In Progress"
+              }
+            ]
+          };
+      
+          if (courses.length > 0) {
+            // At least one course found
+            const courseToUpdate = courses[0];
+            const sectionNumbers = courseToUpdate.section.map(section => section.sectionNumber);
+            const allstatus = courseToUpdate.section.map(section => section.status);
+            let sectionAsString = section.section.toString();
+      
+            for (let i = 0; i < courseToUpdate.section.length; i++) {
+              if (sectionNumbers[i] === sectionAsString) {
+                statuss = allstatus[i];
+                break; // Found a section with sectionNumber === "1", exit the loop
+              }
+            }
+      
+            if (statuss == "fail") {
+              const existingSection = courseToUpdate.section.find(section => section.sectionNumber === sectionAsString);
+
+              if (existingSection) {
+                // Handle the case where the section already exists (update or handle as needed)
+                // For example, you can update the status of the existing section:
+                existingSection.status = "In Progress";
+              } else {
+                // Add the new section to the course
+                courseToUpdate.section.push({
+                  sectionNumber: sectionAsString,
+                  status: "In Progress"
+                });
+                statuss = "In Progress";
+                
+                courseToUpdate.save()
+                  .then(savedCourse => {
+                    statuss = "In Progress";
+                    // Course updated successfully
+                  })
+                  .catch(error => {
+                  });
+              }
+            }
+          } else {
+            // No courses found, so create a new one
+            const courseInstance = new Coursess(a);
+            statuss = "In Progress";
+            courseInstance.save()
+              .then(savedCourse => {
+                // Course created successfully
+              })
+              .catch(error => {
+              });
+          }
+        });
+      
+
+
+
+
+
+
+
+
+
+
         if (emailPrefix === section.teacher.firstNameEN.toLowerCase()) {
           instructorName = section.teacher.firstNameEN + " " + section.teacher.lastNameEN;
           return {
             courseNo: courseNo,
-            sectionNo: section.section,
+            sectionNo: [section.section],
             courseTitleTH: courseTitleTH,
             courseTitleEN: courseTitleEN,
             NameTH: section.teacher.firstNameTH + " " + section.teacher.lastNameTH,
             NameEN: section.teacher.firstNameEN + " " + section.teacher.lastNameEN,
             coTeachers: coTeachers.length > 0 ? coTeacherNames : null,
+            status: statuss,
           };
         } else {
+          const relevant = {
+            courseNo: courseNo,
+            section: section.section,
+            courseTitleTH: courseTitleTH,
+            courseTitleEN: courseTitleEN,
+            instructorName: section.teacher.firstNameEN + " " + section.teacher.lastNameEN,
+            coTeachers: coTeachers.length > 0 ? coTeacherNames : null,
+            status: statuss
+          };
+          relevantCourse.push(relevant);
           return null; // Skip this section if the condition is not met
         }
       });
@@ -197,98 +300,17 @@ router.get('/test', async (req, res) => {
           sectionsData.push(section);
         }
       });
-
-
-      const courses = await Course.find({ courseNo: '261336', year: '2566', semester: '5' }).exec();
-      const a = {
-        courseNo: "261336",
-        year: "2566",
-        semester: "5",
-        section: [
-          {
-            sectionNumber: "1",
-            status: "In Progress",
-            csoList: [
-              {
-                objEN: "Able to describe how web application technology works",
-                objTH: "อธิบายหลักการทำงานของเว็บแอพพลิเคชันและการสื่อสารที่เกี่ยวข้อง",
-                selectedSO: [7],
-                csoScore: 1
-              },
-              {
-                objEN: "Able to develop a web application using software framework",
-                objTH: "พัฒนาเว็บแอพพลิเคชันด้วยเฟรมเวิร์คด้านซอฟต์แวร์ได้",
-                selectedSO: [5, 1],
-                csoScore: 2
-              },
-              {
-                objEN: "Able to develop data service using software framework",
-                objTH: "พัฒนาบริการข้อมูลเบื้องหลังด้วยเฟรมเวิร์คด้านซอฟต์แวร์ได้",
-                selectedSO: [1, 5],
-                csoScore: 3
-              }
-            ]
-          },
-          {
-            sectionNumber: "2",
-            status: "In Progress",
-            csoList: [
-              {
-                objEN: "Example CSO for section 802",
-                "objTH": "ตัวอย่าง CSO สำหรับหัวข้อ 802",
-                selectedSO: [3],
-                csoScore: 2
-              }
-            ]
-          }
-        ]
-      }
-      if (courses.length > 0) {
-        // At least one course found
-        const sectionNumbers = courses[0].section.map(section => section.sectionNumber);
-        const allstatus = courses[0].section.map(section => section.status);
-        let status = "fail"; // Default status if no sectionNumber equals "1"
-
-        for (let i = 0; i < courses[0].section.length; i++) {
-          if (sectionNumbers[i] === "3") {
-            status = allstatus[i];
-            break; // Found a section with sectionNumber === "1", exit the loop
-          }
-        }
-
-        if (status == "fail") {
-          (courses[0].section.push({
-            sectionNumber: "3", status: "In Progress", csoList: [
-              {
-                objEN: "Example CSO for section 802",
-                "objTH": "ตัวอย่าง CSO สำหรับหัวข้อ 802",
-                selectedSO: [3],
-                csoScore: 2
-              }
-            ]
-          }))
-          status = "In Progress";
-          await courses[0].save();
-        }
-        res.status(200).json(status);
-      } else {
-        // No courses found
-        (await Course.create(a)).save();
-        res.status(200).json(a);
-      }
-
-
-
     }
 
     // Convert sectionNo arrays to comma-separated strings
     sectionsData.forEach((section) => {
-      section.sectionNo = section.sectionNo.join(', ');
+      section.sectionNo = section.sectionNo.join([', ']);
     });
 
     sectionsData.sort((a, b) => a.courseNo.localeCompare(b.courseNo));
+    sectionsData.sectionNo = [sectionsData.sectionNo ];
 
-    res.status(200).json({ instructorName, sectionsData });
+    res.status(200).json({ instructorName, sectionsData, relevantCourse });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
