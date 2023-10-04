@@ -280,7 +280,6 @@ router.get('/test', async (req, res) => {
       });
       console.log(tempdatabese);
        const save = new Coursess(tempdatabese[0]);
-       console.log(save);
       save.save();
     }
 
