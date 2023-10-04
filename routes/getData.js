@@ -270,20 +270,12 @@ router.get('/test', async (req, res) => {
         } else {
           const relevant = {
             courseNo: courseNo,
-<<<<<<< HEAD
             section: section.section,
             courseTitleTH: courseTitleTH,
             courseTitleEN: courseTitleEN,
             instructorName: section.teacher.firstNameEN + " " + section.teacher.lastNameEN,
             coTeachers: coTeachers.length > 0 ? coTeacherNames : null,
             status: statuss
-=======
-            section: [section.section],
-            courseTitleTH: courseTitleTH,
-            courseTitleEN: courseTitleEN,
-            instructorName: section.teacher.firstNameEN + " " + section.teacher.lastNameEN,
-            coTeachers: coTeachers.length > 0 ? coTeacherNames : null
->>>>>>> 366841ee7fa1ba8d1a6bc041da272740716555f7
           };
           relevantCourse.push(relevant);
           return null; // Skip this section if the condition is not met
@@ -308,15 +300,6 @@ router.get('/test', async (req, res) => {
           sectionsData.push(section);
         }
       });
-<<<<<<< HEAD
-=======
-
-
-     
-
-
-
->>>>>>> 366841ee7fa1ba8d1a6bc041da272740716555f7
     }
 
     // Convert sectionNo arrays to comma-separated strings
@@ -327,11 +310,7 @@ router.get('/test', async (req, res) => {
     sectionsData.sort((a, b) => a.courseNo.localeCompare(b.courseNo));
     sectionsData.sectionNo = [sectionsData.sectionNo ];
 
-<<<<<<< HEAD
     res.status(200).json({ instructorName, sectionsData, relevantCourse });
-=======
-    res.status(200).json({ instructorName, sectionsData,relevantCourse });
->>>>>>> 366841ee7fa1ba8d1a6bc041da272740716555f7
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
