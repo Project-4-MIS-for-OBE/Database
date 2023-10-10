@@ -188,7 +188,6 @@ router.get('/test', async (req, res) => {
           sectionsData.push(section);
         }
       });
-      console.log(tempdatabese);
        const save = new Coursess(tempdatabese[0]);
       save.save();
     }
