@@ -245,13 +245,21 @@ router.get('/csoScore', async (req, res) => {
       for (let i = 0; i < tempdatabese[0].csoList.length; i++) {
         for (let j = 0; j < tempdatabese[0].csoList[i].selectedSO.length; j++) {
           const temp = tempdatabese[0].csoList[i].selectedSO[j]
-          count[temp]++
-          soscore[temp] += tempdatabese[0].csoList[i].csoScore
+          console.log(temp)
+          count[temp-1]++
+          soscore[temp-1] += tempdatabese[0].csoList[i].csoScore
         }
+  
       }
       for (let i = 0; i < 7; i++) {
+        if(count[i]==0){
+          soscore[i] = soscore[i]/1
+        }else{
           soscore[i] = soscore[i]/count[i]
+        }
       }
+      console.log(soscore)
+     
 
 
 
