@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
     const soList = response2.data.so;
 
     const tempdatabese = await Coursess.find({ courseNo: courseNo, year: year, semester: semester }).exec();
-   
+
 
     // const coursesFilteredBycourseNo = response1.data.courses.filter((course) => {
     //   return course.courseNo === courseNo;
@@ -88,8 +88,8 @@ router.get('/csoScore', async (req, res) => {
         tempdatabese[0].csoList[i].scoreUsesList.push(scoreUsesList[i]);
       }
     }
-    const save = new Coursess(tempdatabese[0]);
-    save.save();
+    // const save = new Coursess(tempdatabese[0]);
+    // save.save();
     const tempsec = tempdatabese[0].section.find((sec) => sec.sectionNumber === section);
 
     const NumberPeoplei = [];
@@ -118,27 +118,44 @@ router.get('/csoScore', async (req, res) => {
       }
       NumberPeoplei.push(NumberPeoplej);
     }
-    
-    const csoavgeach =[];
-    const csoavg =[];
+
+    const csoavgeach = [];
+    const csoavg = [];
     for (let i = 0; i < NumberPeoplei.length; i++) {
       const csoavgeachi = [];
       for (let j = 0; j < NumberPeoplei[i].length; j++) {
         let sum = 0.0;
         let count = 0;
         for (let k = 0; k < NumberPeoplei[i][j].length; k++) {
-          sum = sum + NumberPeoplei[i][j][k]*k;
+          sum = sum + NumberPeoplei[i][j][k] * k;
           count = count + NumberPeoplei[i][j][k];
         }
-        sum = sum/count;
+        sum = sum / count;
         csoavgeachi.push(sum);
       }
       csoavgeach.push(csoavgeachi);
     }
-    tempsec.csoScoreEachSec.push(csoavgeach);
-    tempsec.status = "Success";
-    const save1 = new Coursess({courseNo:tempdatabese[0].courseNo,year:tempdatabese[0].year,semester:tempdatabese[0].semester,csoList:tempdatabese[0].csoList,status:tempdatabese[0].status,section:tempsec});
+    // tempsec.csoScoreEachSec.push(csoavgeach);
+    // tempsec.status = "Success";
+    // const save1 = new Coursess({courseNo:tempdatabese[0].courseNo,year:tempdatabese[0].year,semester:tempdatabese[0].semester,csoList:tempdatabese[0].csoList,status:tempdatabese[0].status,section:tempsec});
+    // save1.save();
+
+
+    for (let i = 0; i < section.length; i++) {
+      if (!tempdatabese[0].section[i]) {
+        // If csoList[i] does not exist, initialize it as an object
+        tempdatabese[0].section[i] = {};
+      }
+      if (!tempdatabese[0].section[i].csoScoreEachSec) {
+        // If scoreUsesList does not exist, initialize it as an empty array
+        tempdatabese[0].section[i].csoScoreEachSec = [];
+      }
+      tempdatabese[0].section[i].csoScoreEachSec.push(csoavgeach);
+      tempdatabese[0].section[i].status = "Success";
+    }
+    const save1 = new Coursess(tempdatabese[0]);
     save1.save();
+
 
 
 
@@ -146,7 +163,7 @@ router.get('/csoScore', async (req, res) => {
 
     // Fetch course data from the first API endpoint
 
-    res.status(200).json(tempsec);
+    res.status(200).json(tempdatabese[0]);
 
   } catch (error) {
     res.status(500).json({ error: error.message });
