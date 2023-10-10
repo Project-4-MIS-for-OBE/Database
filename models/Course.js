@@ -14,6 +14,7 @@ const courseSchema = new mongoose.Schema({
         required : true,
     },
     csoList: {
+        scoreUsesList:[String],
         type: Array,
         objEN: String,
         objTH: String,
@@ -24,6 +25,11 @@ const courseSchema = new mongoose.Schema({
             required: true
         }
     },
+    status:{
+        type: String,
+        enum: ["Waiting", "Success"],
+        required: true
+    },
     section : [{
         sectionNumber: {
             type: String,
@@ -32,6 +38,11 @@ const courseSchema = new mongoose.Schema({
         status:{
             type: String,
             enum: ["Waiting", "In Progress", "Success"],
+            required: true
+        },
+        csoScoreEachSec: {
+            type: Array,
+            default: [],
             required: true
         }
     }]
