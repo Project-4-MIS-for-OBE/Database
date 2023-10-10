@@ -186,63 +186,102 @@ router.get('/csoScore', async (req, res) => {
     //     }
     //   }
     // }
-      let a = 0;
+    let a = 0;
 
+    for (let i = 0; i < tempdatabese[0].section.length; i++) {
+      if (tempdatabese[0].section[i].status == "Success") {
+        a++;
+
+      }
+    }
+    if (a == (tempdatabese[0].section.length)) {
+      tempdatabese[0].status = "Success";
+    }
+    else {
+      tempdatabese[0].status = "Waiting";
+    }
+
+    function elementWiseAddition(arr1, arr2) {
+      if (typeof arr1 === 'number' && typeof arr2 === 'number') {
+        // If both elements are numbers, perform addition
+        return arr1 + arr2;
+      } else if (Array.isArray(arr1) && Array.isArray(arr2) && arr1.length === arr2.length) {
+        // If both elements are arrays of the same length, perform element-wise addition
+        return arr1.map((value, index) => elementWiseAddition(value, arr2[index]));
+      }
+    }
+
+    if (tempdatabese[0].status == "Success") {
+      let tempcso = 0.0
       for (let i = 0; i < tempdatabese[0].section.length; i++) {
-        if (tempdatabese[0].section[i].status == "Success") {
-          a++;
+        for (let j = 0; j < tempdatabese[0].section[i].csoScoreEachSec.length; j++) {
+          if (i == 0) {
+            tempcso = tempdatabese[0].section[i].csoScoreEachSec[j]
 
+          } else {
+            tempcso = elementWiseAddition(tempcso, tempdatabese[0].section[i].csoScoreEachSec[j])
+          }
         }
       }
-      if (a == (tempdatabese[0].section.length - 1)) {
-        tempdatabese[0].status = "Success";
+      const divisor =tempdatabese[0].section.length
+      const dividedArray = tempcso.map((innerArray) =>
+        innerArray.map((number) => number / divisor)
+      );
+      for (let i = 0; i < dividedArray.length; i++) {
+        if(dividedArray[i].length>1){
+          tempdatabese[0].csoList[i].csoScore = dividedArray[i].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+          tempdatabese[0].csoList[i].csoScore =tempdatabese[0].csoList[i].csoScore/dividedArray[i].length
+        }else{
+          tempdatabese[0].csoList[i].csoScore = dividedArray[i]
+        }
+        
       }
-      else {
-        tempdatabese[0].status = "Waiting";
-      }
-      // let b =[]
 
-      // if (tempdatabese[0].status == "Waiting") {
-      //   for (let i = 0; i < tempdatabese[0].section.length; i++) {
-      //     for (let j = 0; j < tempdatabese[0].section[i].csoScoreEachSec.length; j++) {
-      //       for (let k = 0; k < tempdatabese[0].section[i].csoScoreEachSec[j].length; k++) {
-      //         console.log(tempdatabese[0].section[i].csoScoreEachSec[j].length)
-      //         for (let l = 0; l < tempdatabese[0].section[i].csoScoreEachSec[j][k].length; l++) {
-      //           if(l<tempdatabese[0].section[i].csoScoreEachSec[j][k].length){
-      //             b.push(tempdatabese[0].section[i].csoScoreEachSec[j][k][l])
-      //           }
 
-               
-
-      //         }
+      // if (tempdatabese && tempdatabese.length > 0) {
+      //   for (let i = 0; i < tempdatabese[0].csoList.length; i++) {
+      //     if (!tempdatabese[0].csoList[i]) {
+      //       // Initialize csoScoreEachSec and other properties as needed
+      //       tempdatabese[0].csoList[i] = {
+      //         csoScore:0
+      //       };
+      //     }
+      //     if (tempdatabese[0].section[i].sectionNumber[0] === section) {
+  
+      //       if (tempdatabese[0].section[i].csoScoreEachSec.length === 0) {
+      //         tempdatabese[0].section[i].csoScoreEachSec.push(csoavgeach);
+      //         tempdatabese[0].section[i].status = "Success";
       //       }
       //     }
       //   }
       // }
-      // console.log(b)
+  
 
-
-      const save1 = new Coursess(tempdatabese[0]);
-      save1.save();
-
-
-
-
-
-      res.status(200).json(tempdatabese[0]);
-
-      // Fetch course data from the first API endpoint
-
-      // res.status(200).json({
-      //   scoreUsesList: scoreUsesList,
-      //   NumberPeople: NumberPeoplei,
-      //   csoavg: csoavgeach
-      // });
-
-    } catch (error) {
-      res.status(500).json({ error: error.message });
     }
-  })
+
+
+
+    const save1 = new Coursess(tempdatabese[0]);
+    save1.save();
+
+
+
+
+
+    res.status(200).json(tempdatabese[0]);
+
+    // Fetch course data from the first API endpoint
+
+    // res.status(200).json({
+    //   scoreUsesList: scoreUsesList,
+    //   NumberPeople: NumberPeoplei,
+    //   csoavg: csoavgeach
+    // });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
 
 module.exports = router
 

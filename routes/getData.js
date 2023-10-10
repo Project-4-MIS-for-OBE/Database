@@ -82,7 +82,7 @@ router.get('/test', async (req, res) => {
         if (foundCourse) {
            csoList = foundCourse.csoList;
            csoList.forEach((csoItem) => {
-            csoItem.Csoscore = 0;
+            csoItem.csoScore = 0;
           });
           csoList.forEach((csoItem) => {
             csoItem.scoreUsesList=[];
