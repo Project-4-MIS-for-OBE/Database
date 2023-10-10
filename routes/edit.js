@@ -232,7 +232,7 @@ router.get('/csoScore', async (req, res) => {
           tempdatabese[0].csoList[i].csoScore = dividedArray[i].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
           tempdatabese[0].csoList[i].csoScore =tempdatabese[0].csoList[i].csoScore/dividedArray[i].length
         }else{
-          tempdatabese[0].csoList[i].csoScore = dividedArray[i]
+          tempdatabese[0].csoList[i].csoScore = dividedArray[i][0]
         }
         
       }
