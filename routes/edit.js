@@ -53,6 +53,16 @@ router.get('/', async (req, res) => {
     //   return course.curriculum == curriculum;
     // });
     const csoList = tempdatabese[0].csoList;
+    for (let i = 0; i < section.length; i++) {
+      if (!tempdatabese[0].section[i]) {
+        // If csoList[i] does not exist, initialize it as an object
+        tempdatabese[0].section[i] = {};
+      }
+      tempdatabese[0].section[i].status = "In Progress";
+    }
+    const save1 = new Coursess(tempdatabese[0]);
+    save1.save();
+
 
     res.status(200).json({ csoList, soList });
 
@@ -140,35 +150,99 @@ router.get('/csoScore', async (req, res) => {
     // const save1 = new Coursess({courseNo:tempdatabese[0].courseNo,year:tempdatabese[0].year,semester:tempdatabese[0].semester,csoList:tempdatabese[0].csoList,status:tempdatabese[0].status,section:tempsec});
     // save1.save();
 
+    if (tempdatabese && tempdatabese.length > 0) {
+      for (let i = 0; i < tempdatabese[0].section.length; i++) {
+        if (!tempdatabese[0].section[i]) {
+          // Initialize csoScoreEachSec and other properties as needed
+          tempdatabese[0].section[i] = {
+            csoScoreEachSec: [],
+            status: "Waiting"
+          };
+        }
+        if (tempdatabese[0].section[i].sectionNumber[0] === section) {
 
-    for (let i = 0; i < section.length; i++) {
-      if (!tempdatabese[0].section[i]) {
-        // If csoList[i] does not exist, initialize it as an object
-        tempdatabese[0].section[i] = {};
+          if (tempdatabese[0].section[i].csoScoreEachSec.length === 0) {
+            tempdatabese[0].section[i].csoScoreEachSec.push(csoavgeach);
+            tempdatabese[0].section[i].status = "Success";
+          }
+        }
       }
-      if (!tempdatabese[0].section[i].csoScoreEachSec) {
-        // If scoreUsesList does not exist, initialize it as an empty array
-        tempdatabese[0].section[i].csoScoreEachSec = [];
-      }
-      tempdatabese[0].section[i].csoScoreEachSec.push(csoavgeach);
-      tempdatabese[0].section[i].status = "Success";
     }
-    const save1 = new Coursess(tempdatabese[0]);
-    save1.save();
+
+
+    // for (let i = 0; i < tempdatabese[0].section.length; i++) {
+    //   if (!tempdatabese[0].section[i]) {
+    //     // If csoList[i] does not exist, initialize it as an object
+    //     tempdatabese[0].section[i] = {};
+    //   }
+    //   if (!tempdatabese[0].section[i].csoScoreEachSec) {
+    //     // If scoreUsesList does not exist, initialize it as an empty array
+    //     tempdatabese[0].section[i].csoScoreEachSec = [];
+    //   } if (tempdatabese.section[i].sectionNumber == section) {
+    //     if (tempdatabese[0].section[i].csoScoreEachSec.length == 0) {
+    //       tempdatabese[0].section[i].csoScoreEachSec.push(csoavgeach);
+    //       tempdatabese[0].section[i].status = "Success";
+
+    //     }
+    //   }
+    // }
+      let a = 0;
+
+      for (let i = 0; i < tempdatabese[0].section.length; i++) {
+        if (tempdatabese[0].section[i].status == "Success") {
+          a++;
+
+        }
+      }
+      if (a == (tempdatabese[0].section.length - 1)) {
+        tempdatabese[0].status = "Success";
+      }
+      else {
+        tempdatabese[0].status = "Waiting";
+      }
+      // let b =[]
+
+      // if (tempdatabese[0].status == "Waiting") {
+      //   for (let i = 0; i < tempdatabese[0].section.length; i++) {
+      //     for (let j = 0; j < tempdatabese[0].section[i].csoScoreEachSec.length; j++) {
+      //       for (let k = 0; k < tempdatabese[0].section[i].csoScoreEachSec[j].length; k++) {
+      //         console.log(tempdatabese[0].section[i].csoScoreEachSec[j].length)
+      //         for (let l = 0; l < tempdatabese[0].section[i].csoScoreEachSec[j][k].length; l++) {
+      //           if(l<tempdatabese[0].section[i].csoScoreEachSec[j][k].length){
+      //             b.push(tempdatabese[0].section[i].csoScoreEachSec[j][k][l])
+      //           }
+
+               
+
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
+      // console.log(b)
+
+
+      const save1 = new Coursess(tempdatabese[0]);
+      save1.save();
 
 
 
 
 
+      res.status(200).json(tempdatabese[0]);
 
-    // Fetch course data from the first API endpoint
+      // Fetch course data from the first API endpoint
 
-    res.status(200).json(tempdatabese[0]);
+      // res.status(200).json({
+      //   scoreUsesList: scoreUsesList,
+      //   NumberPeople: NumberPeoplei,
+      //   csoavg: csoavgeach
+      // });
 
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-})
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  })
 
 module.exports = router
 

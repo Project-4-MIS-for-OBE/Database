@@ -32,7 +32,7 @@ const courseSchema = new mongoose.Schema({
     },
     section : [{
         sectionNumber: {
-            type: String,
+            type: [String],
             required: true
         },
         status:{
