@@ -239,13 +239,19 @@ router.get('/csoScore', async (req, res) => {
 
       }
       const tempSo = await sos.find({ courseNo: courseNo, year: year, semester: semester }).exec();
-      let count=[0,0,0,0,0,0,0]
-      let soscore =[0,0,0,0,0,0,0]
+      let count = [0, 0, 0, 0, 0, 0, 0]
+      let soscore = [0, 0, 0, 0, 0, 0, 0]
 
-      
-
-
-
+      for (let i = 0; i < tempdatabese[0].csoList.length; i++) {
+        for (let j = 0; j < tempdatabese[0].csoList[i].selectedSO.length; j++) {
+          const temp = tempdatabese[0].csoList[i].selectedSO[j]
+          count[temp]++
+          soscore[temp] += tempdatabese[0].csoList[i].csoScore
+        }
+      }
+      for (let i = 0; i < 7; i++) {
+          soscore[i] = soscore[i]/count[i]
+      }
 
 
 
@@ -261,13 +267,13 @@ router.get('/csoScore', async (req, res) => {
             sectionNumber: section,
             soScore: [
               {
-                so1 : 0,
-                so2 : 0,
-                so3 : 0,
-                so4 : 0,
-                so5 : 0,
-                so6 : 0,
-                so7 : 0,
+                so1: so[0],
+                so2: so[1],
+                so3: so[2],
+                so4: so[3],
+                so5: so[4],
+                so6: so[5],
+                so7: so[6],
 
               }
             ]
@@ -280,25 +286,31 @@ router.get('/csoScore', async (req, res) => {
         // At least one course found
         //const tempdatabese = tempdatabese[0];
         for (let i = 0; i < tempSo[0].section.length; i++) {
-          if (tempSo[0].section[i].sectionNumber=== section) {
+          if (tempSo[0].section[i].sectionNumber === section) {
+            tempSo[0].section[i].soScore[0] = so[0]
+            tempSo[0].section[i].soScore[1] = so[1]
+            tempSo[0].section[i].soScore[2] = so[2]
+            tempSo[0].section[i].soScore[3] = so[3]
+            tempSo[0].section[i].soScore[4] = so[4]
+            tempSo[0].section[i].soScore[5] = so[5]
+            tempSo[0].section[i].soScore[6] = so[6]
             statuss = "found";
             break; // Found a section with sectionNumber === "1", exit the loop
           }
         }
-
         if (statuss == "fail") {
           // Add the new section to the course
           tempSo[0].section.push({
             sectionNumber: section,
             soScore: [
               {
-                so1 : 0,
-                so2 : 0,
-                so3 : 0,
-                so4 : 0,
-                so5 : 0,
-                so6 : 0,
-                so7 : 0,
+                so1: so[0],
+                so2: so[1],
+                so3: so[2],
+                so4: so[3],
+                so5: so[4],
+                so6: so[5],
+                so7: so[6],
 
               }
             ]
@@ -316,7 +328,8 @@ router.get('/csoScore', async (req, res) => {
 
     const save1 = new Coursess(tempdatabese[0]);
     save1.save();
-
+    const save2 = new sos(tempSo[0]);
+    save2.save();
 
 
 
