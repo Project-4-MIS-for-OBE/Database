@@ -42,14 +42,17 @@ router.get('/', async (req, res) => {
     const response2 = await axios.get('https://qa.cpe.eng.cmu.ac.th/api/3rdParty/so?curriculum=' + `${curriculum}` + '&year=' + `${year}`, config_1);
     const soList = response2.data.so;
 
-    const coursesFilteredBycourseNo = response1.data.courses.filter((course) => {
-      return course.courseNo === courseNo;
-    });
+    const tempdatabese = await Coursess.find({ courseNo: courseNo, year: year, semester: semester }).exec();
+   
 
-    const coursesFilteredBycurriculum = coursesFilteredBycourseNo.filter((course) => {
-      return course.curriculum == curriculum;
-    });
-    const csoList = coursesFilteredBycurriculum[0].csoList;
+    // const coursesFilteredBycourseNo = response1.data.courses.filter((course) => {
+    //   return course.courseNo === courseNo;
+    // });
+
+    // const coursesFilteredBycurriculum = coursesFilteredBycourseNo.filter((course) => {
+    //   return course.curriculum == curriculum;
+    // });
+    const csoList = tempdatabese[0].csoList;
 
     res.status(200).json({ csoList, soList });
 
@@ -120,19 +123,27 @@ router.get('/csoScore', async (req, res) => {
     const csoavg =[];
     for (let i = 0; i < NumberPeoplei.length; i++) {
       for (let j = 0; j < NumberPeoplei[i].length; j++) {
-        for (let k = 0; k < NumberPeoplei[i].length; k++) {
-
+        let sum = 0.0;
+        let count = 0;
+        for (let k = 0; k < NumberPeoplei[i][j].length; k++) {
+          sum = sum + NumberPeoplei[i][j][k]*k;
+          count = count + NumberPeoplei[i][j][k];
         }
+        sum = sum/count;
+        csoavgeach.push(sum);
       }
-
     }
+    tempsec.csoScoreEachSec.push(csoavgeach);
+    const save1 = new Coursess({courseNo:tempdatabese[0].courseNo,year:tempdatabese[0].year,semester:tempdatabese[0].semester,csoList:tempdatabese[0].csoList,status:tempdatabese[0].status,section:tempsec});
+    save1.save();
+
 
 
 
 
     // Fetch course data from the first API endpoint
 
-    res.status(200).json(NumberPeoplei);
+    res.status(200).json(csoavgeach);
 
   } catch (error) {
     res.status(500).json({ error: error.message });
