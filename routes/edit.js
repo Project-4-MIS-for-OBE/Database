@@ -321,6 +321,8 @@ router.get('/csoScore', async (req, res) => {
         // No courses found, so create a new one
         tempSo.push(a);
       }
+      const save2 = new sos(tempSo[0]);
+      save2.save();
 
     }
 
@@ -328,8 +330,7 @@ router.get('/csoScore', async (req, res) => {
 
     const save1 = new Coursess(tempdatabese[0]);
     save1.save();
-    const save2 = new sos(tempSo[0]);
-    save2.save();
+   
 
 
 
