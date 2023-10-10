@@ -267,13 +267,13 @@ router.get('/csoScore', async (req, res) => {
             sectionNumber: section,
             soScore: [
               {
-                so1: so[0],
-                so2: so[1],
-                so3: so[2],
-                so4: so[3],
-                so5: so[4],
-                so6: so[5],
-                so7: so[6],
+                so1: soscore[0],
+                so2: soscore[1],
+                so3: soscore[2],
+                so4: soscore[3],
+                so5: soscore[4],
+                so6: soscore[5],
+                so7: soscore[6],
 
               }
             ]
@@ -287,13 +287,13 @@ router.get('/csoScore', async (req, res) => {
         //const tempdatabese = tempdatabese[0];
         for (let i = 0; i < tempSo[0].section.length; i++) {
           if (tempSo[0].section[i].sectionNumber === section) {
-            tempSo[0].section[i].soScore[0] = so[0]
-            tempSo[0].section[i].soScore[1] = so[1]
-            tempSo[0].section[i].soScore[2] = so[2]
-            tempSo[0].section[i].soScore[3] = so[3]
-            tempSo[0].section[i].soScore[4] = so[4]
-            tempSo[0].section[i].soScore[5] = so[5]
-            tempSo[0].section[i].soScore[6] = so[6]
+            tempSo[0].section[i].soScore[0] = soscore[0]
+            tempSo[0].section[i].soScore[1] = soscore[1]
+            tempSo[0].section[i].soScore[2] = soscore[2]
+            tempSo[0].section[i].soScore[3] = soscore[3]
+            tempSo[0].section[i].soScore[4] = soscore[4]
+            tempSo[0].section[i].soScore[5] = soscore[5]
+            tempSo[0].section[i].soScore[6] = soscore[6]
             statuss = "found";
             break; // Found a section with sectionNumber === "1", exit the loop
           }
@@ -304,13 +304,13 @@ router.get('/csoScore', async (req, res) => {
             sectionNumber: section,
             soScore: [
               {
-                so1: so[0],
-                so2: so[1],
-                so3: so[2],
-                so4: so[3],
-                so5: so[4],
-                so6: so[5],
-                so7: so[6],
+                so1: soscore[0],
+                so2: soscore[1],
+                so3: soscore[2],
+                so4: soscore[3],
+                so5: soscore[4],
+                so6: soscore[5],
+                so7: soscore[6],
 
               }
             ]
