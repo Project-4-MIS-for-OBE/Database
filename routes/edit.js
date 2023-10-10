@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const { default: axios } = require('axios');
 const Coursess = require('../models/Course.js');
+const sos = require('../models/So.js');
+
 
 let config_1 = {
   headers: {
@@ -223,39 +225,90 @@ router.get('/csoScore', async (req, res) => {
           }
         }
       }
-      const divisor =tempdatabese[0].section.length
+      const divisor = tempdatabese[0].section.length
       const dividedArray = tempcso.map((innerArray) =>
         innerArray.map((number) => number / divisor)
       );
       for (let i = 0; i < dividedArray.length; i++) {
-        if(dividedArray[i].length>1){
+        if (dividedArray[i].length > 1) {
           tempdatabese[0].csoList[i].csoScore = dividedArray[i].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-          tempdatabese[0].csoList[i].csoScore =tempdatabese[0].csoList[i].csoScore/dividedArray[i].length
-        }else{
+          tempdatabese[0].csoList[i].csoScore = tempdatabese[0].csoList[i].csoScore / dividedArray[i].length
+        } else {
           tempdatabese[0].csoList[i].csoScore = dividedArray[i][0]
         }
-        
+
       }
+      const tempSo = await sos.find({ courseNo: courseNo, year: year, semester: semester }).exec();
+      let count=[0,0,0,0,0,0,0]
+      let soscore =[0,0,0,0,0,0,0]
+
+      
 
 
-      // if (tempdatabese && tempdatabese.length > 0) {
-      //   for (let i = 0; i < tempdatabese[0].csoList.length; i++) {
-      //     if (!tempdatabese[0].csoList[i]) {
-      //       // Initialize csoScoreEachSec and other properties as needed
-      //       tempdatabese[0].csoList[i] = {
-      //         csoScore:0
-      //       };
-      //     }
-      //     if (tempdatabese[0].section[i].sectionNumber[0] === section) {
-  
-      //       if (tempdatabese[0].section[i].csoScoreEachSec.length === 0) {
-      //         tempdatabese[0].section[i].csoScoreEachSec.push(csoavgeach);
-      //         tempdatabese[0].section[i].status = "Success";
-      //       }
-      //     }
-      //   }
-      // }
-  
+
+
+
+
+
+
+
+      const a = {
+        courseNo: courseNo,
+        year: year,
+        semester: semester,
+        section: [
+          {
+            sectionNumber: section,
+            soScore: [
+              {
+                so1 : 0,
+                so2 : 0,
+                so3 : 0,
+                so4 : 0,
+                so5 : 0,
+                so6 : 0,
+                so7 : 0,
+
+              }
+            ]
+          }
+        ]
+      };
+
+      let statuss = "fail";
+      if (tempSo.length > 0) {
+        // At least one course found
+        //const tempdatabese = tempdatabese[0];
+        for (let i = 0; i < tempSo[0].section.length; i++) {
+          if (tempSo[0].section[i].sectionNumber=== section) {
+            statuss = "found";
+            break; // Found a section with sectionNumber === "1", exit the loop
+          }
+        }
+
+        if (statuss == "fail") {
+          // Add the new section to the course
+          tempSo[0].section.push({
+            sectionNumber: section,
+            soScore: [
+              {
+                so1 : 0,
+                so2 : 0,
+                so3 : 0,
+                so4 : 0,
+                so5 : 0,
+                so6 : 0,
+                so7 : 0,
+
+              }
+            ]
+
+          });
+        }
+      } else {
+        // No courses found, so create a new one
+        tempSo.push(a);
+      }
 
     }
 
@@ -268,15 +321,15 @@ router.get('/csoScore', async (req, res) => {
 
 
 
-    res.status(200).json(tempdatabese[0]);
+    // res.status(200).json(tempdatabese[0]);
 
     // Fetch course data from the first API endpoint
 
-    // res.status(200).json({
-    //   scoreUsesList: scoreUsesList,
-    //   NumberPeople: NumberPeoplei,
-    //   csoavg: csoavgeach
-    // });
+    res.status(200).json({
+      scoreUsesList: scoreUsesList,
+      NumberPeople: NumberPeoplei,
+      csoavg: csoavgeach
+    });
 
   } catch (error) {
     res.status(500).json({ error: error.message });
