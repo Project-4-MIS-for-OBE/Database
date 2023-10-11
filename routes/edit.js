@@ -62,6 +62,120 @@ router.get('/', async (req, res) => {
       }
       tempdatabese[0].section[i].status = "In Progress";
     }
+    
+
+    let a = 0;
+
+    for (let i = 0; i < tempdatabese[0].section.length; i++) {
+      if (tempdatabese[0].section[i].status == "Success") {
+        a++;
+
+      }
+    }
+    if (a == (tempdatabese[0].section.length)) {
+      tempdatabese[0].status = "Success";
+    }
+    else {
+      tempdatabese[0].status = "Waiting";
+    }
+
+    function elementWiseAddition(arr1, arr2) {
+      if (typeof arr1 === 'number' && typeof arr2 === 'number') {
+        // If both elements are numbers, perform addition
+        return arr1 + arr2;
+      } else if (Array.isArray(arr1) && Array.isArray(arr2) && arr1.length === arr2.length) {
+        // If both elements are arrays of the same length, perform element-wise addition
+        return arr1.map((value, index) => elementWiseAddition(value, arr2[index]));
+      }
+    }
+
+    if (tempdatabese[0].status == "Success") {
+      let tempcso = 0.0
+      for (let i = 0; i < tempdatabese[0].section.length; i++) {
+        for (let j = 0; j < tempdatabese[0].section[i].csoScoreEachSec.length; j++) {
+          if (i == 0) {
+            tempcso = tempdatabese[0].section[i].csoScoreEachSec[j]
+
+          } else {
+            tempcso = elementWiseAddition(tempcso, tempdatabese[0].section[i].csoScoreEachSec[j])
+          }
+        }
+      }
+      const divisor = tempdatabese[0].section.length
+      const dividedArray = tempcso.map((innerArray) =>
+        innerArray.map((number) => number / divisor)
+      );
+      for (let i = 0; i < dividedArray.length; i++) {
+        if (dividedArray[i].length > 1) {
+          tempdatabese[0].csoList[i].csoScore = dividedArray[i].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+          tempdatabese[0].csoList[i].csoScore = tempdatabese[0].csoList[i].csoScore / dividedArray[i].length
+        } else {
+          tempdatabese[0].csoList[i].csoScore = dividedArray[i][0]
+        }
+
+      }
+      const tempSo = await sos.find({ courseNo: courseNo, year: year, semester: semester }).exec();
+      let count = [0, 0, 0, 0, 0, 0, 0]
+      let soscore = [0, 0, 0, 0, 0, 0, 0]
+
+      for (let i = 0; i < tempdatabese[0].csoList.length; i++) {
+        for (let j = 0; j < tempdatabese[0].csoList[i].selectedSO.length; j++) {
+          const temp = tempdatabese[0].csoList[i].selectedSO[j]
+          console.log(temp)
+          count[temp - 1]++
+          soscore[temp - 1] += tempdatabese[0].csoList[i].csoScore
+        }
+
+      }
+      for (let i = 0; i < 7; i++) {
+        if (count[i] == 0) {
+          soscore[i] = soscore[i] / 1
+        } else {
+          soscore[i] = soscore[i] / count[i]
+        }
+      }
+
+
+
+
+
+
+
+      const a = {
+        courseNo: courseNo,
+        year: year,
+        semester: semester,
+        soScore: [
+          {
+            so1: soscore[0],
+            so2: soscore[1],
+            so3: soscore[2],
+            so4: soscore[3],
+            so5: soscore[4],
+            so6: soscore[5],
+            so7: soscore[6],
+          }
+        ]
+      };
+      if (tempSo.length > 0) {
+            tempSo[0].section[i].soScore[0] = soscore[0]
+            tempSo[0].section[i].soScore[1] = soscore[1]
+            tempSo[0].section[i].soScore[2] = soscore[2]
+            tempSo[0].section[i].soScore[3] = soscore[3]
+            tempSo[0].section[i].soScore[4] = soscore[4]
+            tempSo[0].section[i].soScore[5] = soscore[5]
+            tempSo[0].section[i].soScore[6] = soscore[6]
+      } else {
+        // No courses found, so create a new one
+        tempSo.push(a);
+      }
+      const save2 = new sos(tempSo[0]);
+      save2.save();
+
+    }
+
+
+
     const save1 = new Coursess(tempdatabese[0]);
     save1.save();
 
@@ -258,7 +372,6 @@ router.get('/csoScore', async (req, res) => {
           soscore[i] = soscore[i] / count[i]
         }
       }
-      console.log(soscore)
 
 
 
