@@ -158,13 +158,13 @@ router.get('/', async (req, res) => {
         ]
       };
       if (tempSo.length > 0) {
-            tempSo[0].section[i].soScore[0] = soscore[0]
-            tempSo[0].section[i].soScore[1] = soscore[1]
-            tempSo[0].section[i].soScore[2] = soscore[2]
-            tempSo[0].section[i].soScore[3] = soscore[3]
-            tempSo[0].section[i].soScore[4] = soscore[4]
-            tempSo[0].section[i].soScore[5] = soscore[5]
-            tempSo[0].section[i].soScore[6] = soscore[6]
+            tempSo[0].soScore[0] = soscore[0]
+            tempSo[0].soScore[1] = soscore[1]
+            tempSo[0].soScore[2] = soscore[2]
+            tempSo[0].soScore[3] = soscore[3]
+            tempSo[0].soScore[4] = soscore[4]
+            tempSo[0].soScore[5] = soscore[5]
+            tempSo[0].soScore[6] = soscore[6]
       } else {
         // No courses found, so create a new one
         tempSo.push(a);
@@ -173,7 +173,6 @@ router.get('/', async (req, res) => {
       save2.save();
 
     }
-
 
 
     const save1 = new Coursess(tempdatabese[0]);
