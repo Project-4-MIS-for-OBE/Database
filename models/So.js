@@ -48,16 +48,16 @@ const soSchema = new mongoose.Schema(
       },
 { collection: 'so' })
 
-soSchema.pre('validate', function (next) {
-    const sections = this.section.map(sec => sec.sectionNumber);
-    const uniqueSections = new Set(sections);
+// soSchema.pre('validate', function (next) {
+//     const sections = this.section.map(sec => sec.sectionNumber);
+//     const uniqueSections = new Set(sections);
 
-    if (sections.length !== uniqueSections.size) {
-        return next(new Error('Sections must be unique within a so.'));
-    }
+//     if (sections.length !== uniqueSections.size) {
+//         return next(new Error('Sections must be unique within a so.'));
+//     }
 
-    next();
-});
+//     next();
+// });
 
 soSchema.index({ courseNo: 1, year: 1, semester: 1 }, { unique: true });
 
