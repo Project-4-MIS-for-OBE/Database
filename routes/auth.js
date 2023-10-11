@@ -15,6 +15,13 @@ const verifyAndValidateToken = (token, res) => {
 	});
 };
 
+router.get("/signout", async (req, res) => {
+	console.log(req.cookies);
+	res
+		.clearCookie("token", { path: "/", domain: "localhost" })
+		.send({ ok: true });
+});
+
 router.get("/me", async (req, res) => {
 	try {
 		const token = req.cookies.token;
@@ -93,7 +100,6 @@ router.post("/oauth_student", async (req, res) => {
 				httpOnly: true,
 				sameSite: "lax",
 				path: "/",
-				domain: "localhost",
 				secure: process.env.NODE_ENV === "production",
 				//force cookie to use HTTPS only in production code
 			})
