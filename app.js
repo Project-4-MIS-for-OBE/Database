@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const courses = require('./routes/courses');
 const so = require('./routes/so')
 const getDatas = require('./routes/getData');
-const test = require('./routes/test');
+const summary = require('./routes/summary');
 const edits = require('./routes/edit');
 const updatestatus = require('./routes/updatestatus');
 
@@ -37,7 +37,7 @@ app.use('/users', usersRouter);
 app.use('/courses', courses);
 app.use('/so', so);
 app.use('/getDatas', getDatas);
-app.use('/test',test);
+app.use('/summary',summary);
 app.use('/edits',edits);
 app.use('/updatestatus',updatestatus);
 
