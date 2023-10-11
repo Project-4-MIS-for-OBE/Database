@@ -121,7 +121,7 @@ router.get('/', async (req, res) => {
       for (let i = 0; i < tempdatabese[0].csoList.length; i++) {
         for (let j = 0; j < tempdatabese[0].csoList[i].selectedSO.length; j++) {
           const temp = tempdatabese[0].csoList[i].selectedSO[j]
-          console.log(temp)
+          // console.log(temp)
           count[temp - 1]++
           soscore[temp - 1] += tempdatabese[0].csoList[i].csoScore
         }
@@ -243,7 +243,7 @@ router.get('/csoScore', async (req, res) => {
       }
       NumberPeoplei.push(NumberPeoplej);
     }
-    console.log(NumberPeoplei)
+    // console.log(NumberPeoplei)
     
 
     const csoavgeach = [];
@@ -365,7 +365,7 @@ router.get('/csoScore', async (req, res) => {
       for (let i = 0; i < tempdatabese[0].csoList.length; i++) {
         for (let j = 0; j < tempdatabese[0].csoList[i].selectedSO.length; j++) {
           const temp = tempdatabese[0].csoList[i].selectedSO[j]
-          console.log(temp)
+          // console.log(temp)
           count[temp - 1]++
           soscore[temp - 1] += tempdatabese[0].csoList[i].csoScore
         }
