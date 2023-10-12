@@ -1,60 +1,65 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const mongoose = require('mongoose');
-const courses = require('./routes/courses');
-const so = require('./routes/so')
-const getDatas = require('./routes/getData');
-const summary = require('./routes/summary');
-const edits = require('./routes/edit');
-const updatestatus = require('./routes/updatestatus');
-
+var createError = require("http-errors");
+var express = require("express");
+var path = require("path");
+var cookieParser = require("cookie-parser");
+var logger = require("morgan");
+const mongoose = require("mongoose");
+const courses = require("./routes/courses");
+const so = require("./routes/so");
+const getDatas = require("./routes/getData");
+const summary = require("./routes/summary");
+const edits = require("./routes/edit");
+const auth = require("./routes/auth");
+const updatestatus = require("./routes/updatestatus");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 mongoose.Promise = global.Promise;
 
-mongoose.connect('mongodb+srv://earthx15:1xCsypMaHoAHhfQ3@cluster0.hzhxjn1.mongodb.net/?retryWrites=true&w=majority')
-        .then(() => console.log('Connection Successfully!!!'))
-        .catch((err) => console.error(err))
+mongoose
+	.connect("mongodb://root:example@10.10.182.135:27017/")
+	.then(() => console.log("Connection Successfully!!!"))
+	.catch((err) => console.error(err));
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter = require("./routes/index");
+var usersRouter = require("./routes/users");
 
 var app = express();
-
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cookieParser());
+app.use(bodyParser.json());
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "jade");
 
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/courses', courses);
-app.use('/so', so);
-app.use('/getDatas', getDatas);
-app.use('/summary',summary);
-app.use('/edits',edits);
-app.use('/updatestatus',updatestatus);
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
+app.use("/courses", courses);
+app.use("/so", so);
+app.use("/getDatas", getDatas);
+app.use("/summary", summary);
+app.use("/edits", edits);
+app.use("/updatestatus", updatestatus);
+app.use(`/auth`, auth);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function (req, res, next) {
+	next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+	// render the error page
+	res.status(err.status || 500);
+	res.render("error");
 });
 
 module.exports = app;
