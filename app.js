@@ -16,19 +16,19 @@ const bodyParser = require("body-parser");
 mongoose.Promise = global.Promise;
 
 mongoose
-  .connect("mongodb://root:example@10.10.182.135:27017/")
-  .then(() => console.log("Connection Successfully!!!"))
-  .catch((err) => console.error(err));
+	.connect("mongodb://root:example@10.10.182.135:27017/")
+	.then(() => console.log("Connection Successfully!!!"))
+	.catch((err) => console.error(err));
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 
 var app = express();
 app.use(
-  cors({
-    origin: "fsd-obe.cpe.eng.cmu.ac.th",
-    credentials: true,
-  })
+	cors({
+		origin: "https://fsd-obe.cpe.eng.cmu.ac.th",
+		credentials: true,
+	})
 );
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -53,18 +53,18 @@ app.use(`/auth`, auth);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+	next(createError(404));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+	// render the error page
+	res.status(err.status || 500);
+	res.render("error");
 });
 
 module.exports = app;
