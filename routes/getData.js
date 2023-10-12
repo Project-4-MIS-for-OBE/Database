@@ -112,7 +112,7 @@ router.get('/test', async (req, res) => {
             let sectionAsString = section.section.toString();
       
             for (let i = 0; i < tempdatabese[0].section.length; i++) {
-              if (sectionNumbers[i] === sectionAsString) {
+              if (sectionNumbers[i][0] === sectionAsString) {
                 statuss = allstatus[i];
                 break; // Found a section with sectionNumber === "1", exit the loop
               }
