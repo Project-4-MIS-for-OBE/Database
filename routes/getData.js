@@ -15,7 +15,7 @@ let config_2 = {
   }
 }
 
-router.get('/test', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     // Get parameters from the request query
     const tEmail = req.query.tEmail;
