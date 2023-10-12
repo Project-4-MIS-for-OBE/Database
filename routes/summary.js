@@ -31,12 +31,14 @@ router.get('/', async (req, res) => {
       const csoscoreUsesList = []
       const socso = []
       for(let i =0 ; i<tempdatabese[0].csoList.length; i++ ){
+          const temp = []
           csoob.push(tempdatabese[0].csoList[i].objTH)
           csoScore.push(tempdatabese[0].csoList[i].csoScore)
           csoscoreUsesList.push(tempdatabese[0].csoList[i].scoreUsesList)
           for(let j=0 ; j<tempdatabese[0].csoList[i].selectedSO.length;j++){
-             socso.push(tempdatabese[0].csoList[i].selectedSO[j])
+            temp.push(tempdatabese[0].csoList[i].selectedSO[j])
           }
+          socso.push(temp)
       }
       const tempcso ={
         objTH:csoob,
