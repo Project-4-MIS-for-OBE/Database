@@ -134,7 +134,7 @@ router.get('/', async (req, res) => {
           soscore[i] = soscore[i] / count[i]
         }
       }
-      
+
       const a = {
         courseNo: courseNo,
         year: year,
@@ -180,7 +180,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/csoScore', async (req, res) => {
+router.put('/csoScore', async (req, res) => {
   try {
     // Get parameters from the request query
     const courseNo = req.query.courseNo;
